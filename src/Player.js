@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import background from "./../assets/png/Tilesheet/battle-royale1.json";
 
 export default class Player extends Phaser.Physics.Matter.Sprite {
     constructor(data) {
@@ -25,8 +26,11 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
 
         if (this.inputKeys.left.isDown) {
             playerVelocity.x = -1;
+            //this.rotatePlayer()
+            this.flipX = true
         } else if (this.inputKeys.right.isDown) {
             playerVelocity.x = 1;
+            this.flipX = false
         }
         if (this.inputKeys.up.isDown) {
             playerVelocity.y = -1;
@@ -45,4 +49,10 @@ export default class Player extends Phaser.Physics.Matter.Sprite {
         }
 
     }
+
+rotatePlayer(pointer = this.input.activePointer) {
+    let player = this.player.sprite;
+    let angle = Phaser.Math.Angle.Between(player.x, player.y, pointer.x + this.cameras.main.scrollX, pointer.y + this.cameras.main.scrollY)
+    player.setRotation(angle + Math.PI / 2);
+}
 }

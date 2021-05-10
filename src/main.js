@@ -4,14 +4,14 @@ import MainScene from "./MainScene.js";
 
 
 const config = {
-    width: 512,
-    height: 512,
+    width: 1280,
+    height: 2275,
     backgroundColor: '#333333',
     type: Phaser.AUTO,
     scene: [MainScene],
     antialias: true,
     scale: {
-        zoom: 2,
+        zoom: 1,
     },
     physics: {
         default: 'matter',
