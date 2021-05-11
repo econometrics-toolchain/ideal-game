@@ -1,58 +1,58 @@
-import Phaser from 'phaser';
-import background from "./../assets/png/Tilesheet/battle-royale1.json";
+import Entity from "./Entity"
 
-export default class Player extends Phaser.Physics.Matter.Sprite {
-    constructor(data) {
-        let { scene, x, y, texture, frame } = data;
-        super(scene.matter.world, x, y, texture, frame);
-        this.setScale(.1);
-        this.scene.add.existing(this);
+export default class Player extends Entity {
+    constructor(scene, x, y, textureKey, health) {
+        super(scene, x, y, textureKey, 'Player')
+
+        this.scene = scene;
+        this.health = health
+        this.facing = 'down';
+
+
+        const { LEFT, RIGHT, UP, DOWN, W, A, S, D } = Phaser.Input.Keyboard.KeyCodes
+        this.keys = scene.input.keyboard.addKeys({
+            left: LEFT,
+            right: RIGHT,
+            up: UP,
+            down: DOWN,
+            w: W,
+            a: A,
+            s: S,
+            d: D
+        })
+
+        let angle = 0;
+
+        this.scene.input.on('pointermove', function (pointer) {
+            angle = Phaser.Math.Angle.BetweenPoints(this, pointer);
+            this.rotation = angle;
+        }, this);
 
     }
 
-    static preload(scene) {
-        scene.load.atlas('person', 'person.png', 'person_atlas.json');
-        scene.load.animation('person_anim', 'person_anim.json');
-    }
-
-    get velocity() {
-        return this.body.velocity;
-    }
 
     update() {
 
-        const speed = 5.5;
-        let playerVelocity = new Phaser.Math.Vector2();
+        const { keys } = this
+        const speed = 100
+        const previousVelocity = this.body.velocity.clone()
+        this.body.setVelocity(0)
 
-        if (this.inputKeys.left.isDown) {
-            playerVelocity.x = -1;
-            //this.rotatePlayer()
-            this.flipX = true
-        } else if (this.inputKeys.right.isDown) {
-            playerVelocity.x = 1;
-            this.flipX = false
-        }
-        if (this.inputKeys.up.isDown) {
-            playerVelocity.y = -1;
-        } else if (this.inputKeys.down.isDown) {
-            playerVelocity.y = 1;
+        if (keys.left.isDown || keys.a.isDown) {
+            this.body.setVelocityX(-speed)
+        } else if (keys.right.isDown || keys.d.isDown) {
+            this.body.setVelocityX(speed)
         }
 
-        playerVelocity.normalize();
-        playerVelocity.scale(speed);
-
-        this.setVelocity(playerVelocity.x, playerVelocity.y);
-        if (Math.abs(this.velocity.x) > 0.1 || Math.abs(this.velocity.y) > 0.1) {
-            this.anims.play('run', true);
-        } else {
-            this.anims.play('idle', true);
+        if (keys.up.isDown || keys.w.isDown) {
+            this.body.setVelocityY(-speed)
+        } else if (keys.down.isDown || keys.s.isDown) {
+            this.body.setVelocityY(speed)
         }
+
+        this.body.velocity.normalize().scale(speed);
 
     }
 
-rotatePlayer(pointer = this.input.activePointer) {
-    let player = this.player.sprite;
-    let angle = Phaser.Math.Angle.Between(player.x, player.y, pointer.x + this.cameras.main.scrollX, pointer.y + this.cameras.main.scrollY)
-    player.setRotation(angle + Math.PI / 2);
 }
-}
+
