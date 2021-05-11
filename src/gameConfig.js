@@ -5,8 +5,7 @@ import UIScene from './UIScene';
 window.addEventListener('load', () => {
     let config = {
         type: Phaser.AUTO,
-        width: 400,
-        height: 250,
+        backgroundColor: '#27ae60',
         physics: {
             default: 'arcade',
             arcade: {
@@ -16,7 +15,7 @@ window.addEventListener('load', () => {
             }
         },
         scale: {
-            mode: Phaser.Scale.FIT,
+            mode: Phaser.Scale.RESIZE,
             autoCenter: Phaser.Scale.CENTER_BOTH,
             parent: "thegame"
         },

@@ -19,11 +19,20 @@ export default class GameScene extends Phaser.Scene {
         this.load.atlas('monsters', 'sprites/Zombie 1/zombie.png', 'sprites/Zombie 1/zombie_atlas.json');
     }
 
+    _collisions(collisionLayer) {
+        this.player.body.setCollideWorldBounds(true)
+        this.physics.add.collider(this.player, collisionLayer);
+        this.physics.add.collider(this.enemies, collisionLayer);
+        this.physics.add.collider(this.projectiles, collisionLayer);
+        this.physics.add.overlap(this.player, this.enemies, this.handlePlayerEnemyCollision, null, this)
+        this.physics.add.overlap(this.projectiles, this.enemies, this.handleProjectileEnemyCollision, null, this)
+    }
+
     preload() {
         this.cursors
         // this.cameras.main.height = 256
         // this.cameras.main.width = 336
-        this.cameras.main.setPosition(32, 32)
+        // this.cameras.main.setPosition(32, 32)
 
         this._loadAssets()
 
@@ -40,28 +49,28 @@ export default class GameScene extends Phaser.Scene {
     }
 
     create() {
-
-
         const map = this.make.tilemap({
             key: 'map'
         })
         const tileset = map.addTilesetImage("tilesheet_complete", "tiles", 32, 32, 0,);
-        const layer1 = map.createStaticLayer('Layer1', tileset, 0, 0);
+        const floorLayer = map.createStaticLayer('Layer1', tileset, 0, 0);
+        const collisionLayer = map.createStaticLayer('extraLayer', tileset, 0, 0);
+        const helperLayer = map.createStaticLayer('helperLayer', tileset, 0, 0);
+        collisionLayer.setCollisionByProperty({ collide: true });
+
 
         this.physics.world.bounds.width = map.widthInPixels
         this.physics.world.bounds.height = map.heightInPixels
-        // this.cameras.main.setBounds(0, 0, awmap.widthInPixels, map.heightInPixels)
 
-        const debugGraphics = this.add.graphics().setAlpha(0.2)
+        this.player = new Player(this, 200, 120, 'player', 100)
 
-        this.player = new Player(this, 200, 120, 'player', 100).setScale(0.5)
+
         this.cameras.main.startFollow(this.player, true, 0.8, 0.8)
-        this.player.body.setCollideWorldBounds(true)
 
-        this.enemy2 = new EnemyFollow(this, 250, 200, 'monsters', 20, 'slime', 5).setScale(0.5)
+        this.enemy2 = new EnemyFollow(this, 250, 200, 'monsters', 20, 'slime', 5)
         this.enemy2.body.setCollideWorldBounds(true)
 
-        this.enemy3 = new EnemyFollow(this, 220, 250, 'monsters', 20, 'slime', 5).setScale(0.5)
+        this.enemy3 = new EnemyFollow(this, 220, 250, 'monsters', 20, 'slime', 5)
         this.enemy3.body.setCollideWorldBounds(true)
 
         this.enemies = this.add.group()
@@ -70,9 +79,7 @@ export default class GameScene extends Phaser.Scene {
 
         this.projectiles = new Projectiles(this)
 
-        this.physics.add.overlap(this.player, this.enemies, this.handlePlayerEnemyCollision, null, this)
-        this.physics.add.overlap(this.projectiles, this.enemies, this.handleProjectileEnemyCollision, null, this)
-
+       
 
         this.emitter = this.add.particles('particle').createEmitter({
             x: 200,
@@ -93,6 +100,8 @@ export default class GameScene extends Phaser.Scene {
             lifespan: 300,
             active: false
         })
+
+        this._collisions(collisionLayer);
 
     }
 
@@ -149,6 +158,7 @@ export default class GameScene extends Phaser.Scene {
             loop: false
         })
         e.explode()
+        //
     }
 
     update(time, delta) {

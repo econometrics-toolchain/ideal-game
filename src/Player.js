@@ -27,14 +27,13 @@ export default class Player extends Entity {
             angle = Phaser.Math.Angle.Between(this.x, this.y, pointer.worldX, pointer.worldY);
             this.rotation = angle;
         }, this);
-
     }
 
 
     update() {
 
         const { keys } = this
-        const speed = 100
+        const speed = 250
         const previousVelocity = this.body.velocity.clone()
         this.body.setVelocity(0)
 
