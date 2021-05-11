@@ -13,11 +13,10 @@ export default class GameScene extends Phaser.Scene {
     _loadAssets() {
         this.load.image('bullet', 'bullet.png')
         this.load.image('particle', 'particle.png')
-        this.load.image('tiles', 'png/Tilesheet/tilesheet_complete.png');
-        this.load.tilemapTiledJSON('map', 'png/Tilesheet/map.json');
-        this.load.atlas('player', ' png/PNG/Man Blue/player1.png', ' png/PNG/Man Blue/player1_atlas.json')
+        this.load.image('tiles', 'Tilesheet/tilesheet_complete.png');
+        this.load.tilemapTiledJSON('map', 'Tilesheet/map.json');
+        this.load.atlas('player', ' sprites/Man Blue/player1.png', ' sprites/Man Blue/player1_atlas.json')
         this.load.atlas('monsters', 'sprites/monsters.png', 'sprites/monsters.json')
-
     }
 
     preload() {
@@ -48,23 +47,15 @@ export default class GameScene extends Phaser.Scene {
         const tileset = map.addTilesetImage("tilesheet_complete", "tiles", 32, 32, 0,);
         const layer1 = map.createStaticLayer('Layer1', tileset, 0, 0);
 
-
-
-
         this.physics.world.bounds.width = map.widthInPixels
         this.physics.world.bounds.height = map.heightInPixels
         this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels)
 
         const debugGraphics = this.add.graphics().setAlpha(0.2)
 
-
-
-
         this.player = new Player(this, 200, 120, 'player', 100).setScale(0.5)
         this.cameras.main.startFollow(this.player, true, 0.8, 0.8)
         this.player.body.setCollideWorldBounds(true)
-
-
 
         this.enemy2 = new EnemyFollow(this, 250, 200, 'monsters', 20, 'slime', 5)
         this.enemy2.body.setCollideWorldBounds(true)
@@ -74,15 +65,11 @@ export default class GameScene extends Phaser.Scene {
         this.enemy3.body.setCollideWorldBounds(true)
         this.enemy3.setTint(0x00ff00)
 
-
         this.enemies = this.add.group()
         this.enemies.add(this.enemy2)
         this.enemies.add(this.enemy3)
 
-
-        this.keys = this.input.keyboard.add
         this.projectiles = new Projectiles(this)
-
 
         this.physics.add.overlap(this.player, this.enemies, this.handlePlayerEnemyCollision, null, this)
         this.physics.add.overlap(this.projectiles, this.enemies, this.handleProjectileEnemyCollision, null, this)
@@ -110,10 +97,10 @@ export default class GameScene extends Phaser.Scene {
 
     }
 
-
     handleProjectileWorldCollision(p) {
         this.projectiles.killAndHide(p)
     }
+
     handleProjectileEnemyCollision(enemy, projectile) {
         if (projectile.active) {
             enemy.setTint(0xff0000)
@@ -174,11 +161,7 @@ export default class GameScene extends Phaser.Scene {
             }
         })
 
-
-
-
         this.player.update()
-
 
         this.enemies.children.iterate((child) => {
             if (!child.isDead) {

@@ -46,50 +46,50 @@ export default class EnemyFollow extends Enemy{
             }
         }
         
-        
-        const enemyBlocked = this.body.blocked
+        // nie jestem pewien czy to potrzebne
+        // const enemyBlocked = this.body.blocked
 
-        if (enemyBlocked.down || enemyBlocked.up || enemyBlocked.left || enemyBlocked.right){
-            this.chasing = false
+        // if (enemyBlocked.down || enemyBlocked.up || enemyBlocked.left || enemyBlocked.right){
+        //     this.chasing = false
 
-            this.scene.time.addEvent({
-                delay: 2000,
-                callback: ()=>{
-                    this.chasing = true
-                },
-                callbackScope: this.scene,
-                loop: false
-            })
-            let possibleDirections = []
-            for (const direction in enemyBlocked){
-                possibleDirections.push(direction)
-            }
+        //     this.scene.time.addEvent({
+        //         delay: 2000,
+        //         callback: ()=>{
+        //             this.chasing = true
+        //         },
+        //         callbackScope: this.scene,
+        //         loop: false
+        //     })
+        //     let possibleDirections = []
+        //     for (const direction in enemyBlocked){
+        //         possibleDirections.push(direction)
+        //     }
 
-            const newDirection = possibleDirections[Math.floor(Math.random()*4)+1]
-            switch (newDirection) {
-                case 'up':
-                    this.body.setVelocity(0,-this.speed)//up
-                    // this.anims.play(this.type+'enemy-up')
-                    break
-                case 'left':
-                    this.body.setVelocity(-this.speed,0)//left
-                    // this.anims.play(this.type+'enemy-left')
-                    break
-                case 'down':
-                    this.body.setVelocity(0,this.speed)//down
-                    // this.anims.play(this.type+'enemy-down')
-                    break
-                case 'right':
-                    this.body.setVelocity(this.speed,0)//right
-                    // this.anims.play(this.type+'enemy-right')
-                    break
-                case 'none':
-                    this.body.setVelocity(0,0)//right
-                    // this.anims.stop()as
-                    break
-                default:
-                    break;
-            }
-        }
+        //     const newDirection = possibleDirections[Math.floor(Math.random()*4)+1]
+        //     switch (newDirection) {
+        //         case 'up':
+        //             this.body.setVelocity(0,-this.speed)//up
+        //             // this.anims.play(this.type+'enemy-up')
+        //             break
+        //         case 'left':
+        //             this.body.setVelocity(-this.speed,0)//left
+        //             // this.anims.play(this.type+'enemy-left')
+        //             break
+        //         case 'down':
+        //             this.body.setVelocity(0,this.speed)//down
+        //             // this.anims.play(this.type+'enemy-down')
+        //             break
+        //         case 'right':
+        //             this.body.setVelocity(this.speed,0)//right
+        //             // this.anims.play(this.type+'enemy-right')
+        //             break
+        //         case 'none':
+        //             this.body.setVelocity(0,0)//right
+        //             // this.anims.stop()as
+        //             break
+        //         default:
+        //             break;
+        //     }
+        // }
     }
 }
