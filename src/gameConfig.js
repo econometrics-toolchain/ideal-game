@@ -5,9 +5,8 @@ import UIScene from './UIScene';
 window.addEventListener('load', () => {
     let config = {
         type: Phaser.AUTO,
-        // width: 400,
-        // height: 320,
-        // backgroundColor: 0x220283,
+        width: 400,
+        height: 250,
         physics: {
             default: 'arcade',
             arcade: {

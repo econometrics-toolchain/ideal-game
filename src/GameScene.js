@@ -23,7 +23,7 @@ export default class GameScene extends Phaser.Scene {
         this.cursors
         // this.cameras.main.height = 256
         // this.cameras.main.width = 336
-        // this.cameras.main.setPosition(32, 32)
+        this.cameras.main.setPosition(32, 32)
 
         this._loadAssets()
 
@@ -41,6 +41,7 @@ export default class GameScene extends Phaser.Scene {
 
     create() {
 
+
         const map = this.make.tilemap({
             key: 'map'
         })
@@ -49,7 +50,7 @@ export default class GameScene extends Phaser.Scene {
 
         this.physics.world.bounds.width = map.widthInPixels
         this.physics.world.bounds.height = map.heightInPixels
-        this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels)
+        // this.cameras.main.setBounds(0, 0, awmap.widthInPixels, map.heightInPixels)
 
         const debugGraphics = this.add.graphics().setAlpha(0.2)
 

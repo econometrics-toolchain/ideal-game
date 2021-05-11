@@ -24,7 +24,7 @@ export default class Player extends Entity {
         let angle = 0;
 
         this.scene.input.on('pointermove', function (pointer) {
-            angle = Phaser.Math.Angle.BetweenPoints(this, pointer);
+            angle = Phaser.Math.Angle.Between(this.x, this.y, pointer.worldX, pointer.worldY);
             this.rotation = angle;
         }, this);
 
