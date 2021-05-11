@@ -1,60 +1,44 @@
 
 export class Projectile extends Phaser.Physics.Arcade.Sprite {
-    constructor(scene, x, y){
-        super(scene,x,y,'bullet')
+    constructor(scene, x, y) {
+        super(scene, x, y, 'bullet');
+        this.scene = scene;
         this.x = 200
         this.y = 200
     }
 
-    fire(x,y,dir){
-        console.log('p fire');
-        this.body.reset(x,y)
+    fire(x, y, dir) {
+        console.log(dir);
+        this.body.reset(x, y)
         this.setActive(true)
         this.setVisible(true)
-        this.dir = 'dir'
 
-        this.body.rotation = dir;
+        this.rotation = dir;
+        this.scene.physics.velocityFromRotation(dir, 600, this.body.velocity)
         return;
 
-        // switch(dir){
-        //     case 'left':
-        //         this.setVelocity(-200,0)
-        //         this.body.rotation = 180
-        //         return
-        //     case 'right':
-        //         this.setVelocity(200,0)
-        //         this.body.rotation = 0
-        //         return
-        //     case 'up':
-        //         this.setVelocity(0,-200)
-        //         this.body.rotation = -90
-        //         return
-        //     case 'down':
-        //         this.setVelocity(0,200)
-        //         this.body.rotation = 90
-        //         return
-        // }
+
     }
-    recycle(){
+    recycle() {
         this.setActive(false)
         this.setVisible(false)
     }
 }
 export class Projectiles extends Phaser.Physics.Arcade.Group {
-    constructor(scene){
+    constructor(scene) {
         super(scene.physics.world, scene)
         this.createMultiple({
-            frameQuantity: 5,
+            frameQuantity: 50,
             key: 'bullet',
             active: false,
             visible: false,
             classType: Projectile
         })
     }
-    fireProjectile(x,y,facing){
-        let projectile  = this.getFirstDead(false)
-        if(projectile){
-            projectile.fire(x,y,facing)
+    fireProjectile(x, y, facing) {
+        let projectile = this.getFirstDead(false)
+        if (projectile) {
+            projectile.fire(x, y, facing)
         }
     }
 }

@@ -6,7 +6,7 @@ export default class Player extends Entity {
 
         this.scene = scene;
         this.health = health
-        this.facing = 'down';
+        this.facing = this.rotation;
 
 
         const { LEFT, RIGHT, UP, DOWN, W, A, S, D } = Phaser.Input.Keyboard.KeyCodes

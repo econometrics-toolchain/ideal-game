@@ -171,6 +171,7 @@ export default class GameScene extends Phaser.Scene {
             this.emitter.explode()
         }
     }
+
     handlePlayerEnemyCollision(p, e) {
         p.health -= e.damage
 
@@ -208,7 +209,7 @@ export default class GameScene extends Phaser.Scene {
         if (this.keys.space.isDown) {
             if (time > this.lastFiredTime) {
                 this.lastFiredTime = time + 500
-                this.projectiles.fireProjectile(this.player.x, this.player.y, this.player.facing)
+                this.projectiles.fireProjectile(this.player.x, this.player.y, this.player.rotation)
             }
         }
 
@@ -220,9 +221,7 @@ export default class GameScene extends Phaser.Scene {
         if (!this.enemy2.isDead) {
             this.enemy2.update(this.player.body.position, time)
         }
-        if (!this.enemy3.isDead) {
-            this.enemy3.update(this.player.body.position, time)
-        }
+      
         this.enemies.children.iterate((child) => {
             if (!child.isDead) {
                 child.update()
