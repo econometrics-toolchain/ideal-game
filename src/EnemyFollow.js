@@ -8,7 +8,7 @@ export default class EnemyFollow extends Enemy{
         this.chasing = true
         this.storedTime = 0
         this.damage = damage
-    }//end create
+    }
 
     update(destination, time){
         const {speed} = this
@@ -24,22 +24,22 @@ export default class EnemyFollow extends Enemy{
                     if (this.body.x < destination.x){
                         //move right
                         this.body.setVelocity(speed, 0)
-                        this.anims.play(this.type+'enemy-right',true)
+                        // this.anims.play(this.type+'enemy-right',true)
                     }else {
                         //move left
                         this.body.setVelocity(-speed, 0)
-                        this.anims.play(this.type+'enemy-left',true)
+                        // this.anims.play(this.type+'enemy-left',true)
                 }
                 }else{
                     //close y gap
                     if (this.body.y < destination.y){
                         //move down
                         this.body.setVelocity(0,speed)
-                        this.anims.play(this.type+'enemy-down',true)
+                        // this.anims.play(this.type+'enemy-down',true)
                     }else{
                         //move up
                         this.body.setVelocity(0,-speed)
-                        this.anims.play(this.type+'enemy-up',true)
+                        // this.anims.play(this.type+'enemyas-up',true)
                 }
                 }
                 this.body.velocity.normalize().scale(speed)
@@ -60,42 +60,36 @@ export default class EnemyFollow extends Enemy{
                 callbackScope: this.scene,
                 loop: false
             })
-            // console.log(enemyBlocked);
             let possibleDirections = []
             for (const direction in enemyBlocked){
                 possibleDirections.push(direction)
             }
 
             const newDirection = possibleDirections[Math.floor(Math.random()*4)+1]
-            // console.log(newDirection);
             switch (newDirection) {
                 case 'up':
                     this.body.setVelocity(0,-this.speed)//up
-                    this.anims.play(this.type+'enemy-up')
+                    // this.anims.play(this.type+'enemy-up')
                     break
                 case 'left':
                     this.body.setVelocity(-this.speed,0)//left
-                    this.anims.play(this.type+'enemy-left')
+                    // this.anims.play(this.type+'enemy-left')
                     break
                 case 'down':
                     this.body.setVelocity(0,this.speed)//down
-                    this.anims.play(this.type+'enemy-down')
+                    // this.anims.play(this.type+'enemy-down')
                     break
                 case 'right':
                     this.body.setVelocity(this.speed,0)//right
-                    this.anims.play(this.type+'enemy-right')
+                    // this.anims.play(this.type+'enemy-right')
                     break
                 case 'none':
                     this.body.setVelocity(0,0)//right
-                    this.anims.stop()
+                    // this.anims.stop()as
                     break
                 default:
                     break;
-            }//end switch
-    
-        }//end blocked
- 
-        //////////
-    }//end update
-
-}//end class
+            }
+        }
+    }
+}

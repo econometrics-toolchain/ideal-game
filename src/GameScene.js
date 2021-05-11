@@ -10,31 +10,24 @@ export default class GameScene extends Phaser.Scene {
         super('GameScene')
     }
 
+    _loadAssets() {
+        this.load.image('bullet', 'bullet.png')
+        this.load.image('particle', 'particle.png')
+        this.load.image('tiles', 'png/Tilesheet/tilesheet_complete.png');
+        this.load.tilemapTiledJSON('map', 'png/Tilesheet/map.json');
+        this.load.atlas('player', ' png/PNG/Man Blue/player1.png', ' png/PNG/Man Blue/player1_atlas.json')
+        this.load.atlas('monsters', 'sprites/monsters.png', 'sprites/monsters.json')
+
+    }
+
     preload() {
         this.cursors
         // this.cameras.main.height = 256
         // this.cameras.main.width = 336
         // this.cameras.main.setPosition(32, 32)
-        this.load.image('bullet', 'bullet.png')
-        this.load.image('particle', 'particle.png')
 
-        this.load.image('tiles', 'png/Tilesheet/tilesheet_complete.png');
-        this.load.tilemapTiledJSON('map', 'png/Tilesheet/map.json');
+        this._loadAssets()
 
-        // this.load.spritesheet('characters', 'characters.png', {
-        //     frameWidth: 16,
-        //     frameHieght: 16
-        // })
-
-        this.load.atlas('player', ' png/PNG/Man Blue/player1.png', ' png/PNG/Man Blue/player1_atlas.json')
-
-        // this.load.spritesheet('pickups', 'sprites/pickupsSmall.png', {
-        //     frameWidth: 16,
-        //     frameHieght: 16
-        // })
-
-        // this.asload.atlas('tpOnline', 'spritesheetV2.png', 'spritesheetV2.json')
-        this.load.atlas('monsters', 'sprites/monsters.png', 'sprites/monsters.json')
         this.player
         this.keys
         this.enemy
@@ -44,6 +37,7 @@ export default class GameScene extends Phaser.Scene {
         this.keys
         this.lastFiredTime = 0
         this.emmiter
+        this.stage
     }
 
     create() {
@@ -53,25 +47,16 @@ export default class GameScene extends Phaser.Scene {
         })
         const tileset = map.addTilesetImage("tilesheet_complete", "tiles", 32, 32, 0,);
         const layer1 = map.createStaticLayer('Layer1', tileset, 0, 0);
-        // const worldLayer = map.createStaticLayer("floor", tileset, 0, 0);
-        // const tileset = map.addTilesetImage('purple', 'tiles')
-        // const worldLayer = map.createStaticLayer('world', tileset, 0, 0)
-        // const monsterLayer = map.createStaticLayer('monster layer', tileset, 0, 0)
 
-        // worldLayer.setCollisionByProperty({
-        //     collides: true
-        // })
+
+
 
         this.physics.world.bounds.width = map.widthInPixels
         this.physics.world.bounds.height = map.heightInPixels
         this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels)
 
-        // const debugGraphics = this.add.graphics().setAlpha(0.2)
-        // worldLayer.renderDebug(debugGraphics, {
-        //     tileColor: null,
-        //     collidingTileColor: new Phaser.Display.Color(0, 0, 255),
-        //     faceColor: new Phaser.Display.Color(0, 255, 0, 255)
-        // })
+        const debugGraphics = this.add.graphics().setAlpha(0.2)
+
 
 
 
@@ -80,53 +65,29 @@ export default class GameScene extends Phaser.Scene {
         this.player.body.setCollideWorldBounds(true)
 
 
-        this.enemy = new Enemy(this, 250, 200, 'monsters', 20, 'ghost', 10)
-        this.enemy.body.setCollideWorldBounds(true)
 
         this.enemy2 = new EnemyFollow(this, 250, 200, 'monsters', 20, 'slime', 5)
         this.enemy2.body.setCollideWorldBounds(true)
         this.enemy2.setTint(0x00ff00)
 
-        this.enemy3 = new EnemyFollow(this, 250, 200, 'monsters', 20, 'slime', 5)
+        this.enemy3 = new EnemyFollow(this, 220, 250, 'monsters', 20, 'slime', 5)
         this.enemy3.body.setCollideWorldBounds(true)
         this.enemy3.setTint(0x00ff00)
 
-      
+
         this.enemies = this.add.group()
-        this.enemies.add(this.enemy)
         this.enemies.add(this.enemy2)
         this.enemies.add(this.enemy3)
-        // this.enemies.add(this.enemy4)
-        // this.enemies.add(this.enemy5)
 
 
-
-        // monsterLayer.forEachTile(tile => {
-        //     if (tile.properties.kind !== undefined) {
-        //         const x = tile.getCenterX()
-        //         const y = tile.getCenterY()
-        //         const e = new Enemy(this, x, y, 'monsters', 10, tile.properties.kind, tile.properties.speed)
-        //         this.enemies.add(e)
-        //         e.body.setCollideWorldBounds(true)
-        //     }
-        // })
-
-
-        this.keys = this.input.keyboard.addKeys({
-            space: 'SPACE'
-        })
+        this.keys = this.input.keyboard.add
         this.projectiles = new Projectiles(this)
 
-      
-        // this.physics.add.collider(this.player, worldLayer)
-        this.physics.add.overlap(this.player, this.enemies, this.handlePlayerEnemyCollision, null, this)
-        this.physics.add.collider(this.player, this.coins, this.handlePlayerCoinCollision, null, this)
-        this.physics.add.collider(this.player, this.gems, this.handlePlayerGemCollision, null, this)
-        // this.physics.add.collider(this.projectiles, worldLayer, this.handleProjectileWorldCollision, null, this)
-        this.physics.add.overlap(this.projectiles, this.enemies, this.handleProjectileEnemyCollision, null, this)
-        // this.physics.add.collider(this.enemies, worldLayer)
 
-       
+        this.physics.add.overlap(this.player, this.enemies, this.handlePlayerEnemyCollision, null, this)
+        this.physics.add.overlap(this.projectiles, this.enemies, this.handleProjectileEnemyCollision, null, this)
+
+
         this.emitter = this.add.particles('particle').createEmitter({
             x: 200,
             y: 200,
@@ -149,7 +110,6 @@ export default class GameScene extends Phaser.Scene {
 
     }
 
-   
 
     handleProjectileWorldCollision(p) {
         this.projectiles.killAndHide(p)
@@ -206,25 +166,23 @@ export default class GameScene extends Phaser.Scene {
     }
 
     update(time, delta) {
-        if (this.keys.space.isDown) {
+
+        this.input.on('pointerdown', pointer => {
             if (time > this.lastFiredTime) {
                 this.lastFiredTime = time + 500
                 this.projectiles.fireProjectile(this.player.x, this.player.y, this.player.rotation)
             }
-        }
+        })
+
+
+
 
         this.player.update()
 
-        if (!this.enemy.isDead) {
-            this.enemy.update()
-        }
-        if (!this.enemy2.isDead) {
-            this.enemy2.update(this.player.body.position, time)
-        }
-      
+
         this.enemies.children.iterate((child) => {
             if (!child.isDead) {
-                child.update()
+                child.update(this.player.body.position, time)
             }
         })
     }
