@@ -15,8 +15,8 @@ export default class GameScene extends Phaser.Scene {
         this.load.image('particle', 'particle.png')
         this.load.image('tiles', 'Tilesheet/tilesheet_complete.png');
         this.load.tilemapTiledJSON('map', 'Tilesheet/map.json');
-        this.load.atlas('player', ' sprites/Man Blue/player1.png', ' sprites/Man Blue/player1_atlas.json')
-        this.load.atlas('monsters', 'sprites/monsters.png', 'sprites/monsters.json')
+        this.load.atlas('player', ' sprites/Man Blue/player1.png', ' sprites/Man Blue/player1_atlas.json');
+        this.load.atlas('monsters', 'sprites/Zombie 1/zombie.png', 'sprites/Zombie 1/zombie_atlas.json');
     }
 
     preload() {
@@ -57,13 +57,11 @@ export default class GameScene extends Phaser.Scene {
         this.cameras.main.startFollow(this.player, true, 0.8, 0.8)
         this.player.body.setCollideWorldBounds(true)
 
-        this.enemy2 = new EnemyFollow(this, 250, 200, 'monsters', 20, 'slime', 5)
+        this.enemy2 = new EnemyFollow(this, 250, 200, 'monsters', 20, 'slime', 5).setScale(0.5)
         this.enemy2.body.setCollideWorldBounds(true)
-        this.enemy2.setTint(0x00ff00)
 
-        this.enemy3 = new EnemyFollow(this, 220, 250, 'monsters', 20, 'slime', 5)
+        this.enemy3 = new EnemyFollow(this, 220, 250, 'monsters', 20, 'slime', 5).setScale(0.5)
         this.enemy3.body.setCollideWorldBounds(true)
-        this.enemy3.setTint(0x00ff00)
 
         this.enemies = this.add.group()
         this.enemies.add(this.enemy2)

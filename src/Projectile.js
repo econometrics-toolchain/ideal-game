@@ -8,7 +8,6 @@ export class Projectile extends Phaser.Physics.Arcade.Sprite {
     }
 
     fire(x, y, dir) {
-        console.log(dir);
         this.body.reset(x, y)
         this.setActive(true)
         this.setVisible(true)
@@ -22,6 +21,7 @@ export class Projectile extends Phaser.Physics.Arcade.Sprite {
         this.setVisible(false)
     }
 }
+
 export class Projectiles extends Phaser.Physics.Arcade.Group {
     constructor(scene) {
         super(scene.physics.world, scene)
