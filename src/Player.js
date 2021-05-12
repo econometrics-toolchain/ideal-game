@@ -8,7 +8,8 @@ export default class Player extends Entity {
         this.initialHealth = health;
         this.health = health
         this.facing = this.rotation;
-
+        this.takingDamage = false;
+        this.hpRegenTriggered = false;
 
         const { LEFT, RIGHT, UP, DOWN, W, A, S, D } = Phaser.Input.Keyboard.KeyCodes
         this.keys = scene.input.keyboard.addKeys({
@@ -32,7 +33,6 @@ export default class Player extends Entity {
 
 
     update() {
-        // console.log();
         const { keys } = this
         const speed = 250
         const previousVelocity = this.body.velocity.clone()
@@ -55,13 +55,18 @@ export default class Player extends Entity {
     }
 
     _healthRegen() {
-        if (this.health < this.initialHealth) {
+        if (this.health < this.initialHealth && !this.takingDamage && !this.hpRegenTriggered) {
+            this.hpRegenTriggered = true;
+            console.log('health trigger');
             this.scene.time.addEvent({
                 delay: 5000,
                 callback: () => {
                     let ui = this.scene.scene.get('UIScene')
                     this.health = this.initialHealth;
                     ui.healthbar.updateHealth(this.health)
+                    this.hpRegenTriggered = false;
+
+                    console.log('health restored');
                 },
                 loop: false,
             })

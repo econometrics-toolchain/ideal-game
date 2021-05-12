@@ -8,5 +8,6 @@ export default class Enemy extends Entity {
         this.damage = damage
         this.type = type
         this.speed = speed
+        this.canAttack = true;
     }
 }

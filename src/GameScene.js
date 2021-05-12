@@ -1,8 +1,10 @@
 import Enemy from "./Enemy"
 import EnemyFollow from "./EnemyFollow"
+import WebFontFile from "./FontLoader"
 import Healthbar from "./Healthbar"
 import Player from "./Player"
 import { Projectiles } from "./Projectile"
+import { startStage } from "./Stage"
 
 
 export default class GameScene extends Phaser.Scene {
@@ -41,6 +43,7 @@ export default class GameScene extends Phaser.Scene {
     }
 
     preload() {
+
         this.cursors
         this._loadAssets()
 
@@ -53,33 +56,24 @@ export default class GameScene extends Phaser.Scene {
         this.keys
         this.lastFiredTime = 0
         this.emmiter
-        this.stage
+        this.currentStage = 0;
+        this.stageEnded = true;
+        this.zombiesToKill = 0;
     }
 
     create() {
 
         const { map, collisionLayer } = this._layers()
 
-
         this.physics.world.bounds.width = map.widthInPixels
         this.physics.world.bounds.height = map.heightInPixels
-
         this.player = new Player(this, 800, 520, 'player', 100)
         this.cameras.main.startFollow(this.player, true, 0.8, 0.8)
-
-
+        this.projectiles = new Projectiles(this)
         this.enemies = this.add.group()
 
 
-        for (let i = 0; i < 10; i++) {
-            const enemy = new EnemyFollow(this, 270 + i * 30, 250 + i * 30, 'monsters', 10, 'zombie', 5);
-            enemy.body.setCollideWorldBounds(true);
-            this.physics.add.collider(enemy, this.enemies, this.handleCollisionEnemyEnemy, null, this)
-            this.enemies.add(enemy);
-        }
 
-
-        this.projectiles = new Projectiles(this)
 
         this.emitter = this.add.particles('particle').createEmitter({
             x: 200,
@@ -126,7 +120,6 @@ export default class GameScene extends Phaser.Scene {
             this.time.addEvent({
                 delay: 300,
                 callback: () => {
-
                     enemy.explode()
 
                 },
@@ -140,52 +133,69 @@ export default class GameScene extends Phaser.Scene {
     }
 
     handlePlayerEnemyCollision(p, e) {
-        p.health -= e.damage
-        e.body.setVelocity(-(e.body.velocity.x) * 2, -(e.body.velocity.y) * 2);
-        let ui = this.scene.get('UIScene')
-        ui.healthbar.updateHealth(p.health)
-        if (p.health <= 0) {
-            this.cameras.main.shake(100, 0.05)
-            this.cameras.main.fade(250, 0, 0, 0)
-            this.cameras.main.once('camerafadeoutcomplete', () => {
-                this.enemies.children.iterate((child) => {
-                    if (child) {
-                        child.explode()
-                    }
-                })
-                ui.reset()
-                this.scene.stop('UIScene')
-                this.scene.start('loseScene', { health: p.health })
+        if (e.canAttack) {
+            e.canAttack = false;
+            p.takingDamage = true;
+            p.health -= e.damage
+            e.body.setVelocity(-(e.body.velocity.x) * 2, -(e.body.velocity.y) * 2);
 
+            let ui = this.scene.get('UIScene')
+            ui.healthbar.updateHealth(p.health)
+
+            if (p.health <= 0) {
+                this.cameras.main.shake(100, 0.05)
+                this.cameras.main.fade(250, 0, 0, 0)
+                this.cameras.main.once('camerafadeoutcomplete', () => {
+                    this.enemies.children.iterate((child) => {
+                        if (child) {
+                            child.explode()
+                        }
+                    })
+                    ui.reset()
+                    this.scene.stop('UIScene')
+                    this.scene.start('loseScene', { health: p.health })
+                })
+            }
+
+            this.cameras.main.shake(40, 0.02)
+            p.setTint(0xff0000)
+            this.time.addEvent({
+                delay: 500,
+                callback: () => {
+                    p.clearTint()
+                    e.canAttack = true
+                    p.takingDamage = false;
+                },
+                callbackScope: this,
+                loop: false
             })
         }
-
-
-        this.cameras.main.shake(40, 0.02)
-        p.setTint(0xff0000)
-        this.time.addEvent({
-            delay: 500,
-            callback: () => {
-                p.clearTint()
-            },
-            callbackScope: this,
-            loop: false
-        })
-
-        // e.explode()
         return;
-
     }
 
-    update(time, delta) {
 
-        this.input.on('pointerdown', pointer => {
+    update(time, delta) {
+        if (this.stageEnded) {
+            this.stageEnded = false;
+            this.currentStage += 1;
+            this.zombiesToKill = startStage(this, this.currentStage);
+
+            let ui = this.scene.get('UIScene')
+            ui.navbar.updateContent(this.currentStage)
+            
+        }
+
+        if (!this.stageEnded && this.enemies.children.entries.length === 0) {
+            this.stageEnded = true;
+        }
+
+        if (this.input.activePointer.isDown) {
+
             if (time > this.lastFiredTime) {
                 this.lastFiredTime = time + 500
                 this.projectiles.fireProjectile(this.player.x, this.player.y, this.player.rotation)
             }
-        })
-
+        }
         this.player.update()
         this.enemies.children.iterate((child) => {
             if (!child.isDead) {
