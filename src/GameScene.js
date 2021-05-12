@@ -58,16 +58,15 @@ export default class GameScene extends Phaser.Scene {
         this.physics.world.bounds.width = map.widthInPixels
         this.physics.world.bounds.height = map.heightInPixels
 
-        this.player = new Player(this, 200, 120, 'player', 100)
-
-
+        this.player = new Player(this, 800, 520, 'player', 100)
         this.cameras.main.startFollow(this.player, true, 0.8, 0.8)
+
 
         this.enemies = this.add.group()
 
 
         for (let i = 0; i < 10; i++) {
-            const enemy = new EnemyFollow(this, 270+i*30, 250+i*30, 'monsters', 40, 'slime', 5);
+            const enemy = new EnemyFollow(this, 270+i*30, 250+i*30, 'monsters', 10, 'zombie', 5);
             enemy.body.setCollideWorldBounds(true);
             this.physics.add.collider(enemy, this.enemies);
 
@@ -109,7 +108,7 @@ export default class GameScene extends Phaser.Scene {
 
     }
     handleProjectileWorldCollision(p) {
-        this.projectiles.killAndHide(p)
+        this.projectiles.killAndHide(p);
     }
 
     handleProjectileEnemyCollision(enemy, projectile) {
@@ -135,7 +134,7 @@ export default class GameScene extends Phaser.Scene {
 
     handlePlayerEnemyCollision(p, e) {
         p.health -= e.damage
-
+        e.body.setVelocity(-(e.body.velocity.x)*2,-(e.body.velocity.y)*2);
         let ui = this.scene.get('UIScene')
         ui.healthbar.updateHealth(p.health)
         if (p.health <= 0) {
@@ -165,11 +164,10 @@ export default class GameScene extends Phaser.Scene {
             callbackScope: this,
             loop: false
         })
-        p.body.setVelocity(-(e.body.velocity.x),-(e.body.velocity.y));
-        e.explode()
+        
+        // e.explode()
         return;
         
-        //
     }
 
     update(time, delta) {
