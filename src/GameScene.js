@@ -22,8 +22,8 @@ export default class GameScene extends Phaser.Scene {
     _collisions(collisionLayer) {
         this.player.body.setCollideWorldBounds(true)
         this.physics.add.collider(this.player, collisionLayer);
-        this.physics.add.collider(this.enemies, collisionLayer);
-        this.physics.add.collider(this.projectiles, collisionLayer);
+        this.physics.add.collider(this.enemies, collisionLayer,this.handleEnemyWorldCollision,null,this);
+        this.physics.add.collider(this.projectiles, collisionLayer,this.handleProjectileWorldCollision,null,this);
         this.physics.add.overlap(this.player, this.enemies, this.handlePlayerEnemyCollision, null, this)
         this.physics.add.overlap(this.projectiles, this.enemies, this.handleProjectileEnemyCollision, null, this)
     }
@@ -105,6 +105,11 @@ export default class GameScene extends Phaser.Scene {
 
     }
 
+
+    handleEnemyWorldCollision(p){
+        p.body.setVelocity((30),(40))
+
+    }
     handleProjectileWorldCollision(p) {
         this.projectiles.killAndHide(p)
     }
@@ -112,11 +117,14 @@ export default class GameScene extends Phaser.Scene {
     handleProjectileEnemyCollision(enemy, projectile) {
         if (projectile.active) {
             enemy.setTint(0xff0000)
+            enemy.body.setVelocity(projectile.body.velocity.x,projectile.body.velocity.y)
+            projectile.recycle()
             this.time.addEvent({
-                delay: 30,
+                delay: 300,
                 callback: () => {
+                   
                     enemy.explode()
-                    projectile.recycle()
+                    
                 },
                 callbackScope: this,
                 loop: false
@@ -157,7 +165,10 @@ export default class GameScene extends Phaser.Scene {
             callbackScope: this,
             loop: false
         })
+        p.body.setVelocity(-(e.body.velocity.x),-(e.body.velocity.y));
         e.explode()
+        return;
+        
         //
     }
 
