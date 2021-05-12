@@ -63,8 +63,6 @@ export default class GameScene extends Phaser.Scene {
 
         this.cameras.main.startFollow(this.player, true, 0.8, 0.8)
 
-
-
         this.enemies = this.add.group()
 
 
