@@ -12,7 +12,7 @@ export class Projectile extends Phaser.Physics.Arcade.Sprite {
         this.setActive(true)
         this.setVisible(true)
         this.rotation = dir;
-        this.scene.physics.velocityFromRotation(dir, 300, this.body.velocity)
+        this.scene.physics.velocityFromRotation(dir, 500, this.body.velocity)
         return;
     }
     

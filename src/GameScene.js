@@ -30,10 +30,6 @@ export default class GameScene extends Phaser.Scene {
 
     preload() {
         this.cursors
-        // this.cameras.main.height = 256
-        // this.cameras.main.width = 336
-        // this.cameras.main.setPosition(32, 32)
-
         this._loadAssets()
 
         this.player
@@ -67,19 +63,23 @@ export default class GameScene extends Phaser.Scene {
 
         this.cameras.main.startFollow(this.player, true, 0.8, 0.8)
 
-        this.enemy2 = new EnemyFollow(this, 250, 200, 'monsters', 20, 'slime', 5)
-        this.enemy2.body.setCollideWorldBounds(true)
 
-        this.enemy3 = new EnemyFollow(this, 220, 250, 'monsters', 20, 'slime', 5)
-        this.enemy3.body.setCollideWorldBounds(true)
 
         this.enemies = this.add.group()
-        this.enemies.add(this.enemy2)
-        this.enemies.add(this.enemy3)
+
+
+        for (let i = 0; i < 10; i++) {
+            const enemy = new EnemyFollow(this, 270+i*30, 250+i*30, 'monsters', 40, 'slime', 5);
+            enemy.body.setCollideWorldBounds(true);
+            this.physics.add.collider(enemy, this.enemies);
+
+            this.enemies.add(enemy);
+        }
+
 
         this.projectiles = new Projectiles(this)
 
-       
+
 
         this.emitter = this.add.particles('particle').createEmitter({
             x: 200,
@@ -132,7 +132,7 @@ export default class GameScene extends Phaser.Scene {
 
         let ui = this.scene.get('UIScene')
         ui.healthbar.updateHealth(p.health)
-        if (p.health <= 50) {
+        if (p.health <= 0) {
             this.cameras.main.shake(100, 0.05)
             this.cameras.main.fade(250, 0, 0, 0)
             this.cameras.main.once('camerafadeoutcomplete', () => {
@@ -147,6 +147,8 @@ export default class GameScene extends Phaser.Scene {
 
             })
         }
+
+
         this.cameras.main.shake(40, 0.02)
         p.setTint(0xff0000)
         this.time.addEvent({

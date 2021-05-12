@@ -23,7 +23,6 @@ export default class Healthbar {
         this.newGraphics.fillRectShape(healthbarFill)
 
         this.scene.add.text(x, y + this.offsetY - 2, 'HP', { fontSize: '12px', fill: '#fff' })
-
     }
 
     updateHealth(health) {
