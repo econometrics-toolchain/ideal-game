@@ -68,15 +68,12 @@ export default class GameScene extends Phaser.Scene {
         for (let i = 0; i < 10; i++) {
             const enemy = new EnemyFollow(this, 270+i*30, 250+i*30, 'monsters', 10, 'zombie', 5);
             enemy.body.setCollideWorldBounds(true);
-            this.physics.add.collider(enemy, this.enemies);
-
+            this.physics.add.collider(enemy, this.enemies, this.handleCollisionEnemyEnemy, null, this)
             this.enemies.add(enemy);
         }
 
 
         this.projectiles = new Projectiles(this)
-
-
 
         this.emitter = this.add.particles('particle').createEmitter({
             x: 200,
@@ -102,6 +99,11 @@ export default class GameScene extends Phaser.Scene {
 
     }
 
+    handleCollisionEnemyEnemy(e1,e2){
+        // e1.body.setVelocity(50,50)
+        // e2.body.setVelocity(-10,)
+
+    }
 
     handleEnemyWorldCollision(p){
         p.body.setVelocity((30),(40))
