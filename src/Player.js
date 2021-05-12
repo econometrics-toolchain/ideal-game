@@ -5,6 +5,7 @@ export default class Player extends Entity {
         super(scene, x, y, textureKey, 'Player')
 
         this.scene = scene;
+        this.initialHealth = health;
         this.health = health
         this.facing = this.rotation;
 
@@ -31,7 +32,7 @@ export default class Player extends Entity {
 
 
     update() {
-
+        // console.log();
         const { keys } = this
         const speed = 250
         const previousVelocity = this.body.velocity.clone()
@@ -50,7 +51,21 @@ export default class Player extends Entity {
         }
 
         this.body.velocity.normalize().scale(speed);
+        this._healthRegen();
+    }
 
+    _healthRegen() {
+        if (this.health < this.initialHealth) {
+            this.scene.time.addEvent({
+                delay: 5000,
+                callback: () => {
+                    let ui = this.scene.scene.get('UIScene')
+                    this.health = this.initialHealth;
+                    ui.healthbar.updateHealth(this.health)
+                },
+                loop: false,
+            })
+        }
     }
 
 }

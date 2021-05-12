@@ -5,6 +5,7 @@ export class Projectile extends Phaser.Physics.Arcade.Sprite {
         this.scene = scene;
         this.x = 200
         this.y = 200
+        
     }
 
     fire(x, y, dir) {
@@ -26,7 +27,7 @@ export class Projectiles extends Phaser.Physics.Arcade.Group {
     constructor(scene) {
         super(scene.physics.world, scene)
         this.createMultiple({
-            frameQuantity: 50,
+            frameQuantity: 5,
             key: 'bullet',
             active: false,
             visible: false,

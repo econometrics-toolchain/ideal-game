@@ -22,10 +22,22 @@ export default class GameScene extends Phaser.Scene {
     _collisions(collisionLayer) {
         this.player.body.setCollideWorldBounds(true)
         this.physics.add.collider(this.player, collisionLayer);
-        this.physics.add.collider(this.enemies, collisionLayer,this.handleEnemyWorldCollision,null,this);
-        this.physics.add.collider(this.projectiles, collisionLayer,this.handleProjectileWorldCollision,null,this);
+        this.physics.add.collider(this.enemies, collisionLayer, this.handleEnemyWorldCollision, null, this);
+        this.physics.add.collider(this.projectiles, collisionLayer, this.handleProjectileWorldCollision, null, this);
         this.physics.add.overlap(this.player, this.enemies, this.handlePlayerEnemyCollision, null, this)
         this.physics.add.overlap(this.projectiles, this.enemies, this.handleProjectileEnemyCollision, null, this)
+    }
+
+    _layers() {
+        const map = this.make.tilemap({
+            key: 'map'
+        })
+        const tileset = map.addTilesetImage("tilesheet_complete", "tiles", 32, 32, 0,);
+        const floorLayer = map.createStaticLayer('Layer1', tileset, 0, 0);
+        const collisionLayer = map.createStaticLayer('extraLayer', tileset, 0, 0);
+        const helperLayer = map.createStaticLayer('helperLayer', tileset, 0, 0);
+        collisionLayer.setCollisionByProperty({ collide: true });
+        return { map, collisionLayer };
     }
 
     preload() {
@@ -45,14 +57,8 @@ export default class GameScene extends Phaser.Scene {
     }
 
     create() {
-        const map = this.make.tilemap({
-            key: 'map'
-        })
-        const tileset = map.addTilesetImage("tilesheet_complete", "tiles", 32, 32, 0,);
-        const floorLayer = map.createStaticLayer('Layer1', tileset, 0, 0);
-        const collisionLayer = map.createStaticLayer('extraLayer', tileset, 0, 0);
-        const helperLayer = map.createStaticLayer('helperLayer', tileset, 0, 0);
-        collisionLayer.setCollisionByProperty({ collide: true });
+
+        const { map, collisionLayer } = this._layers()
 
 
         this.physics.world.bounds.width = map.widthInPixels
@@ -66,7 +72,7 @@ export default class GameScene extends Phaser.Scene {
 
 
         for (let i = 0; i < 10; i++) {
-            const enemy = new EnemyFollow(this, 270+i*30, 250+i*30, 'monsters', 10, 'zombie', 5);
+            const enemy = new EnemyFollow(this, 270 + i * 30, 250 + i * 30, 'monsters', 10, 'zombie', 5);
             enemy.body.setCollideWorldBounds(true);
             this.physics.add.collider(enemy, this.enemies, this.handleCollisionEnemyEnemy, null, this)
             this.enemies.add(enemy);
@@ -79,7 +85,7 @@ export default class GameScene extends Phaser.Scene {
             x: 200,
             y: 200,
             quantity: 15,
-            speed: {
+            swpeed: {
                 min: -100,
                 max: 100
             },
@@ -99,14 +105,13 @@ export default class GameScene extends Phaser.Scene {
 
     }
 
-    handleCollisionEnemyEnemy(e1,e2){
+    handleCollisionEnemyEnemy(e1, e2) {
         // e1.body.setVelocity(50,50)
         // e2.body.setVelocity(-10,)
-
     }
 
-    handleEnemyWorldCollision(p){
-        p.body.setVelocity((30),(40))
+    handleEnemyWorldCollision(p) {
+        p.body.setVelocity((30), (40))
 
     }
     handleProjectileWorldCollision(p) {
@@ -116,14 +121,14 @@ export default class GameScene extends Phaser.Scene {
     handleProjectileEnemyCollision(enemy, projectile) {
         if (projectile.active) {
             enemy.setTint(0xff0000)
-            enemy.body.setVelocity(projectile.body.velocity.x,projectile.body.velocity.y)
+            enemy.body.setVelocity(projectile.body.velocity.x, projectile.body.velocity.y)
             projectile.recycle()
             this.time.addEvent({
                 delay: 300,
                 callback: () => {
-                   
+
                     enemy.explode()
-                    
+
                 },
                 callbackScope: this,
                 loop: false
@@ -136,7 +141,7 @@ export default class GameScene extends Phaser.Scene {
 
     handlePlayerEnemyCollision(p, e) {
         p.health -= e.damage
-        e.body.setVelocity(-(e.body.velocity.x)*2,-(e.body.velocity.y)*2);
+        e.body.setVelocity(-(e.body.velocity.x) * 2, -(e.body.velocity.y) * 2);
         let ui = this.scene.get('UIScene')
         ui.healthbar.updateHealth(p.health)
         if (p.health <= 0) {
@@ -166,10 +171,10 @@ export default class GameScene extends Phaser.Scene {
             callbackScope: this,
             loop: false
         })
-        
+
         // e.explode()
         return;
-        
+
     }
 
     update(time, delta) {
@@ -182,7 +187,6 @@ export default class GameScene extends Phaser.Scene {
         })
 
         this.player.update()
-
         this.enemies.children.iterate((child) => {
             if (!child.isDead) {
                 child.update(this.player.body.position, time)
