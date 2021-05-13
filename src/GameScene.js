@@ -6,6 +6,7 @@ import Player from "./Player"
 import { Projectiles } from "./Projectile"
 import { startStage } from "./Stage"
 import io from 'socket.io-client';
+import { NONE } from "phaser"
 
 export default class GameScene extends Phaser.Scene {
     constructor() {
@@ -27,7 +28,6 @@ export default class GameScene extends Phaser.Scene {
         this.physics.add.collider(this.projectiles, collisionLayer, this.handleProjectileWorldCollision, null, this);
         this.physics.add.collider(this.enemyProjectiles, collisionLayer, this.handleProjectileWorldCollision, null, this)
         this.physics.add.overlap(this.projectiles, this.enemies, this.handleProjectileEnemyCollision, null, this)
-
         this.physics.add.collider(this.enemyProjectiles, bulletCollision, this.handleProjectileWorldCollision, null, this)
         this.physics.add.collider(this.projectiles, bulletCollision, this.handleProjectileWorldCollision, null, this)
     }
@@ -86,11 +86,12 @@ export default class GameScene extends Phaser.Scene {
 
             if (!(id in this.players)) {
 
-                const player = new Player(this, pos.x, pos.y, 'player', 100, id, 25)
+                const player = new Player(this, pos.x, pos.y, 'player', 100, id, 25).setTint(0x696969)
                 player.body.setCollideWorldBounds(true)
                 this.playersGroup.add(player)
 
                 if (!this.mainPlayer) {
+                    player.clearTint()
                     this.mainPlayer = player
                     this.setupMainPlayer()
                 }
