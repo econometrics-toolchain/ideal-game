@@ -7,14 +7,17 @@ export default class Navbar {
         this.y = y
 
         this.offsetY = 20;
+        const screenCenterX = this.scene.cameras.main.worldView.x + this.scene.cameras.main.width / 2;
 
-        this.content = this.scene.add.text(0, 0, `stage  ${this.stage}`, {
+        this.content = this.scene.add.text(screenCenterX, 10, `stage  ${this.stage}`, {
             fontFamily: 'Butcherman',
             fontWeight: 'bold',
             fontSize: '30px',
             fill: '#ff0000'
         })
-        Phaser.Display.Align.In.TopRight(this.content, this.scene.add.zone(400, 300, 800, 600))
+
+        
+
 
 
     }

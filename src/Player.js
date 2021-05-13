@@ -1,15 +1,17 @@
 import Entity from "./Entity"
 
 export default class Player extends Entity {
-    constructor(scene, x, y, textureKey, health) {
+    constructor(scene, x, y, textureKey, health, id, damage) {
         super(scene, x, y, textureKey, 'Player')
 
+        this.id = id;
         this.scene = scene;
         this.initialHealth = health;
         this.health = health
         this.facing = this.rotation;
-        this.takingDamage = false;
+        this.zombiesKilled = 0;
         this.hpRegenTriggered = false;
+        this.damage = damage;
 
         const { LEFT, RIGHT, UP, DOWN, W, A, S, D } = Phaser.Input.Keyboard.KeyCodes
         this.keys = scene.input.keyboard.addKeys({
@@ -23,12 +25,6 @@ export default class Player extends Entity {
             d: D
         })
 
-        let angle = 0;
-
-        this.scene.input.on('pointermove', function (pointer) {
-            angle = Phaser.Math.Angle.Between(this.x, this.y, pointer.worldX, pointer.worldY);
-            this.rotation = angle;
-        }, this);
     }
 
 
@@ -49,6 +45,10 @@ export default class Player extends Entity {
         } else if (keys.down.isDown || keys.s.isDown) {
             this.body.setVelocityY(speed)
         }
+
+        const { x, y } = this.body.position
+
+        this.scene.socket.emit('pos', { x, y, rotation: this.rotation })
 
         this.body.velocity.normalize().scale(speed);
         this._healthRegen();

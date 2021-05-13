@@ -1,7 +1,7 @@
 import Enemy from "./Enemy"
 
 export default class EnemyFollow extends Enemy {
-    constructor(scene, x, y, textureKey, damage, type, speed) {
+    constructor(scene, x, y, textureKey, damage, type, speed, health) {
         super(scene, x, y, textureKey, 'Enemy', type)
 
         this.speed = 32
@@ -9,7 +9,7 @@ export default class EnemyFollow extends Enemy {
         this.storedTime = 0
         this.damage = damage
         this.scene = scene;
-
+        this.health = health;
         this.setFrame('zoimbie1_hold')
     }
 
