@@ -152,8 +152,7 @@ export default class GameScene extends Phaser.Scene {
         p.body.setVelocity((30), (40))
     }
     handleProjectileWorldCollision(p) {
-        this.projectiles.killAndHide(p);
-        // p.recycle()
+        p.recycle()
     }
 
     handleProjectileEnemyCollision(enemy, projectile) {
